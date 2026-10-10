@@ -408,10 +408,58 @@
 
   function drawPath(item) {
     if (!item.points.length) return;
-    ctx.save(); ctx.strokeStyle = "rgba(255,250,243,.88)"; ctx.lineWidth = item.size + 2.5; ctx.lineCap = "round"; ctx.lineJoin = "round"; strokePoints(item.points);
-    ctx.strokeStyle = item.color; ctx.lineWidth = item.size; ctx.setLineDash([4, 2.5]); strokePoints(item.points); ctx.restore();
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = item.color;
+    ctx.globalAlpha = 0.16;
+    ctx.lineWidth = item.size + 2.8;
+    strokePoints(item.points);
+    ctx.globalAlpha = 1;
+    const step = Math.max(5, item.size + 2);
+    let carry = 0;
+    let stitchIndex = 0;
+    const drawCrossStitch = (x, y, angle) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle + Math.PI / 4);
+      const size = Math.max(1.8, item.size * 0.72);
+      ctx.strokeStyle = item.color;
+      ctx.globalAlpha = stitchIndex % 3 === 0 ? 0.96 : 0.78;
+      ctx.lineWidth = Math.max(0.8, item.size / 4);
+      ctx.beginPath();
+      ctx.moveTo(-size, -size);
+      ctx.lineTo(size, size);
+      ctx.moveTo(size, -size);
+      ctx.lineTo(-size, size);
+      ctx.stroke();
+      ctx.globalAlpha = 0.28;
+      ctx.strokeStyle = "#fffaf3";
+      ctx.lineWidth = Math.max(0.45, item.size / 8);
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.6, -size * 0.6);
+      ctx.lineTo(size * 0.6, size * 0.6);
+      ctx.stroke();
+      ctx.restore();
+      stitchIndex += 1;
+    };
+    drawCrossStitch(item.points[0].x, item.points[0].y, 0);
+    for (let i = 1; i < item.points.length; i += 1) {
+      const from = item.points[i - 1];
+      const to = item.points[i];
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const length = Math.hypot(dx, dy);
+      if (!length) continue;
+      const angle = Math.atan2(dy, dx);
+      for (let distance = step - carry; distance <= length; distance += step) {
+        const ratio = distance / length;
+        drawCrossStitch(from.x + dx * ratio, from.y + dy * ratio, angle);
+      }
+      carry = (carry + length) % step;
+    }
+    ctx.restore();
   }
-
   function strokePoints(points) { ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y); for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y); ctx.stroke(); }
 
   function roundedRect(context, x, y, width, height, radius) { context.beginPath(); context.moveTo(x + radius, y); context.arcTo(x + width, y, x + width, y + height, radius); context.arcTo(x + width, y + height, x, y + height, radius); context.arcTo(x, y + height, x, y, radius); context.arcTo(x, y, x + width, y, radius); context.closePath(); }
