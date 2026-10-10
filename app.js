@@ -322,23 +322,63 @@
     ctx.translate(item.x, item.y);
     ctx.rotate(item.rotation || 0);
     const fontSize = item.size * state.stitchScale;
-    ctx.font = `600 ${fontSize}px "Noto Serif SC", Georgia, serif`;
-    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = "rgba(255, 250, 243, .78)";
-    ctx.lineWidth = 3.8;
-    ctx.strokeText(item.text, 0, 0);
-    ctx.strokeStyle = item.color;
-    ctx.lineWidth = 1.75;
-    ctx.strokeText(item.text, 0, 0);
+    const font = "700 " + fontSize + "px \"Ma Shan Zheng\", \"KaiTi\", \"STKaiti\", \"Noto Serif SC\", serif";
+    const probe = document.createElement("canvas");
+    const probeCtx = probe.getContext("2d");
+    probeCtx.font = font;
+    const textWidth = Math.ceil(probeCtx.measureText(item.text).width + 22);
+    const textHeight = Math.ceil(fontSize * 1.65);
+    probe.width = textWidth;
+    probe.height = textHeight;
+    const maskCtx = probe.getContext("2d");
+    maskCtx.font = font;
+    maskCtx.textAlign = "center";
+    maskCtx.textBaseline = "middle";
+    maskCtx.fillStyle = "#ffffff";
+    maskCtx.fillText(item.text, textWidth / 2, textHeight / 2);
+    const pixels = maskCtx.getImageData(0, 0, textWidth, textHeight).data;
+    const gap = Math.max(4, Math.round(fontSize / 10));
+    const stitchSize = gap * 0.72;
+    ctx.globalAlpha = 0.12;
     ctx.fillStyle = item.color;
-    ctx.globalAlpha = .12;
-    ctx.fillText(item.text, 1.3, 1.1);
+    ctx.font = font;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(item.text, 1.5, 1.8);
     ctx.globalAlpha = 1;
-    if (state.sparkle) drawThreadTicks(item.text, fontSize, item.color);
+    let index = 0;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    for (let y = gap / 2; y < textHeight; y += gap) {
+      for (let x = gap / 2; x < textWidth; x += gap) {
+        const pixel = (Math.floor(y) * textWidth + Math.floor(x)) * 4 + 3;
+        if (pixels[pixel] < 96) continue;
+        const px = x - textWidth / 2;
+        const py = y - textHeight / 2;
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.strokeStyle = item.color;
+        ctx.globalAlpha = index % 3 === 0 ? 0.96 : 0.78;
+        ctx.lineWidth = Math.max(0.85, gap / 5);
+        ctx.beginPath();
+        ctx.moveTo(-stitchSize, -stitchSize);
+        ctx.lineTo(stitchSize, stitchSize);
+        ctx.moveTo(stitchSize, -stitchSize);
+        ctx.lineTo(-stitchSize, stitchSize);
+        ctx.stroke();
+        ctx.globalAlpha = 0.28;
+        ctx.strokeStyle = "#fffaf3";
+        ctx.lineWidth = Math.max(0.45, gap / 9);
+        ctx.beginPath();
+        ctx.moveTo(-stitchSize * 0.62, -stitchSize * 0.62);
+        ctx.lineTo(stitchSize * 0.62, stitchSize * 0.62);
+        ctx.stroke();
+        ctx.restore();
+        index += 1;
+      }
+    }
     ctx.restore();
   }
-
   function drawThreadTicks(text, size, color) {
     const length = Math.min(120, text.length * size * .7);
     ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = .45; ctx.lineWidth = 1;
