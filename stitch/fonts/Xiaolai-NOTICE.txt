@@ -1,0 +1,10 @@
+Xiaolai (小赖字体)
+
+Copyright 2020-2024 LXGW
+https://github.com/lxgw/kose-font
+
+Copyright 2014 Nozomi Seto
+https://ja.osdn.net/projects/setofont/
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+See OFL-1.1.txt in this directory for the complete license text.

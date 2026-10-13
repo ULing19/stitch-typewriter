@@ -1,41 +1,35 @@
-# 绣字机 · Stitch Typewriter
+# 文字刺绣小工具
 
-一个把文字变成手绣桌布的轻量互动网页。输入一句话，挑一根线，点选图案，像在一块柔软的布上慢慢留下自己的针脚。
+仓库根目录会进入 `stitch/`，这里是从原项目整理进来的完整刺绣工作台。
 
-这是一个**原创实现**，视觉灵感来自手工刺绣、布料纹理和老式打字机，不使用参考作品的图片或代码。
+原项目入口：<https://hijessie.space/stitch/>
+
+原作者：**hi.Jessie** · <https://hijessie.space/>
 
 ## 功能
 
-- 10 种绣线颜色，也可以自定义颜色
-- 输入中文、英文或 emoji，生成带针脚质感的文字
-- 9 种线稿图案：星星、心心、小花、蝴蝶、云朵、月亮、音符、太阳、叶子
-- 手绘工具：鼠标、触控板或手机触摸都可以画线
-- 剪刀工具：点击或拖过元素即可删除
-- 撤销 / 重做、清空布面
-- 针脚大小、布面暖度、边框和闪光效果设置
-- 一键导出 PNG
-- 纯 HTML / CSS / JavaScript，无构建步骤、无第三方运行时依赖
+- 中文、英文、数字逐字手写绣线
+- 即时输入和逐针动画，带针、引线和收针效果
+- 多种绣线、混色线、布料、桌面和边框样式
+- 字体大小、对齐、垂直位置、图案、照片贴布、手绘和剪刀工具
+- 撤销、历史页、PNG/JPG、GIF、视频和 DST 导出
+- 支持移动端触摸操作
+- 字体和 GIF 编码器资源随项目本地提供，离线运行不依赖原站
 
 ## 本地运行
-
-直接双击 `index.html` 即可打开。若希望使用本地开发服务器：
 
 ```bash
 python -m http.server 5173
 ```
 
-然后访问 <http://localhost:5173>。
+然后打开 <http://127.0.0.1:5173/>。
 
-## 快捷键
+直接双击 `index.html` 也可进入 `stitch/`，但本地服务器更适合测试字体资源和导出功能。
 
-- `Enter`：绣上文字
-- `Ctrl/Cmd + Z`：撤销
-- `Ctrl/Cmd + Shift + Z` 或 `Ctrl/Cmd + Y`：重做
+## 来源与授权
 
-## GitHub Pages
+迁移来源、作者署名与核验范围见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。原站 `hijessie.space/stitch/` 页面没有显示可核实的代码许可证；本仓库根目录的 MIT `LICENSE` 不适用于该原站内容，也不表示原站代码已获再分发授权。
 
-这是静态项目，推送到 GitHub 后，在仓库的 **Settings → Pages** 中选择 `Deploy from a branch`，分支选择 `main`、目录选择 `/ (root)`，保存即可。
+随项目分发的 Xiaolai 和 LXGW WenKai 字体按 SIL Open Font License 1.1 授权。完整许可正文、各字体版权声明及 WenKai 附加许可见 [`stitch/fonts/`](stitch/fonts/)。随附的 `gifenc.js` 采用 MIT License，完整文本见 [`stitch/vendor/LICENSE.gifenc.txt`](stitch/vendor/LICENSE.gifenc.txt)。
 
-## License
-
-MIT
+网页中的字形和材质是浏览器刺绣视觉模拟，不是实体绣花机控制程序。
